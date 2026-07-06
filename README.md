@@ -1,57 +1,173 @@
-# CaloriX 🔥🤖
+# 🔥 CaloriX
 
-An AI-powered nutrition assistant and calorie tracking platform that combines traditional calorie tracking with machine learning and generative AI to deliver smarter meal recommendations and food analysis.
+<p align="center">
+  <h3 align="center">AI-Powered Calorie Tracking & Nutrition Assistant</h3>
+
+  <p align="center">
+    Track smarter. Live healthier.
+    <br />
+    Personalized nutrition tracking powered by AI.
+  </p>
+</p>
+
+---
+
+## 📌 Overview
+
+CaloriX is a full-stack calorie tracking and nutrition management platform that combines traditional calorie counting with modern AI capabilities.
+
+The platform allows users to:
+
+- Track calories and macronutrients
+- Calculate BMR and TDEE automatically
+- Set personalized fitness goals
+- Receive AI-generated meal suggestions
+- Analyze food images using computer vision
+- Manage nutrition data through an intuitive dashboard
 
 ---
 
 ## ✨ Features
 
-### 🔐 Authentication & User Management
+### 🔐 Authentication & Security
 - JWT Authentication
-- Secure password hashing with bcrypt
-- User profiles and nutrition goals
-- Personalized calorie and macro targets
+- Access & Refresh Tokens
+- Password hashing with bcrypt
+- Protected API routes
 
-### 🍽️ Meal Tracking
-- Add meals manually
-- Track calories, protein, carbs, and fat
-- Categorize meals by type
-- Daily nutrition overview
+### 📊 Personalized Nutrition Dashboard
+- Automatic BMR calculation
+- TDEE calculation
+- Daily calorie target generation
+- Personalized macro distribution
+- Goal-based recommendations
 
-### 🤖 Machine Learning Features
-- Food category prediction
-- Similar food recommendations using nutritional similarity
-- Macro-based recommendation engine
+### 🎯 Fitness Goals
+- Weight Loss
+- Maintenance
+- Muscle Gain
 
-### 🧠 AI Features
-- Generate meals from available ingredients using Gemini AI
-- Analyze food images using Gemini Vision
-- Estimate calories and macros from uploaded food photos
-- Personalized meal suggestions based on user goals
+### 🤖 AI Pantry Chef
+Generate personalized meals from ingredients already available in your kitchen.
 
-### 📊 Analytics
-- Daily calorie progress
-- Macro distribution tracking
-- Nutrition insights
+Features include:
+- Ingredient-based meal generation
+- Macro-aware recommendations
+- Meal type filtering
+- Dietary preference filtering
+- Calorie limit support
+
+### 📷 AI Food Vision
+Upload food images and receive:
+
+- Estimated calories
+- Protein amount
+- Carbohydrates
+- Fat content
+- Ingredient detection
+- AI confidence score
+
+### 📚 Developer Friendly APIs
+- Fully documented Swagger API
+- OpenAPI support
+- Modular architecture
+- Clean service layer design
 
 ---
 
-# 🛠️ Tech Stack
+## 📸 Screenshots
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 18 + Vite + TailwindCSS |
-| Backend | FastAPI + Pydantic |
-| Database | SQLite + SQLAlchemy |
-| Authentication | JWT + python-jose + bcrypt |
-| Machine Learning | Scikit-learn |
-| AI Models | Google Gemini 2.5 Flash |
-| Computer Vision | Gemini Vision |
-| API Documentation | Swagger/OpenAPI |
+### Landing Page
+
+![Landing Page](screenshots/landing.png)
 
 ---
 
-# 🏗️ Project Architecture
+### Login Page
+
+![Login](screenshots/login.png)
+
+---
+
+### Registration Page
+
+![Register](screenshots/register.png)
+
+---
+
+### Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+---
+
+### Profile & Goal Calculation
+
+![Profile](screenshots/profile.png)
+
+---
+
+### AI Pantry Chef
+
+Generate meals from available ingredients.
+
+![Pantry Chef](screenshots/pantry-chef.png)
+
+---
+
+### AI Food Vision
+
+Analyze food images using Google Gemini Vision.
+
+![Food Vision](screenshots/food-vision.png)
+
+---
+
+## 🏗 Architecture
+
+```text
+CaloriX
+│
+├── Frontend (React + Vite)
+│
+├── Backend (FastAPI)
+│
+├── SQLite Database
+│
+└── Google Gemini AI
+    ├── Meal Suggestions
+    └── Food Vision Analysis
+```
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- React 18
+- Vite
+- TailwindCSS
+- Axios
+- React Router DOM
+
+### Backend
+- FastAPI
+- SQLAlchemy
+- Pydantic
+- JWT Authentication
+- bcrypt
+
+### Database
+- SQLite
+
+### AI
+- Google Gemini API
+- Gemini Flash
+- Gemini Vision
+
+---
+
+## 📁 Project Structure
 
 ```text
 CaloriX/
@@ -59,22 +175,13 @@ CaloriX/
 ├── backend/
 │   ├── app/
 │   │   ├── api/
-│   │   │   └── v1/
-│   │   │       ├── auth.py
-│   │   │       ├── meals.py
-│   │   │       ├── profile.py
-│   │   │       ├── ml.py
-│   │   │       └── ai.py
-│   │   │
 │   │   ├── auth/
 │   │   ├── core/
 │   │   ├── database/
 │   │   ├── models/
 │   │   ├── schemas/
 │   │   ├── services/
-│   │   │   ├── ml_service.py
-│   │   │   └── ai_service.py
-│   │   │
+│   │   ├── utils/
 │   │   └── main.py
 │   │
 │   ├── requirements.txt
@@ -83,43 +190,65 @@ CaloriX/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   └── ai/
-│   │   │
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── layouts/
 │   │   ├── pages/
-│   │   │   └── AIAssistantPage.jsx
-│   │   │
-│   │   ├── services/
-│   │   │   └── aiService.js
-│   │   │
-│   │   └── layouts/
+│   │   └── services/
 │   │
-│   └── package.json
+│   ├── package.json
+│   └── vite.config.js
 │
 └── README.md
 ```
 
 ---
 
-# 🚀 Quick Start
+# 🚀 Getting Started
 
-## Backend
+## Clone Repository
+
+```bash
+git clone https://github.com/MohameedAlaa/CaloriX.git
+cd CaloriX
+```
+
+---
+
+## Backend Setup
 
 ```bash
 cd backend
 
 python -m venv venv
 
-# Windows
 venv\Scripts\activate
 
 pip install -r requirements.txt
-
-copy .env.example .env
-
-python -m uvicorn app.main:app --reload
 ```
 
-Backend API:
+Create `.env`
+
+```env
+APP_NAME=CaloriX
+DEBUG=true
+
+DATABASE_URL=sqlite:///./calorixx.db
+
+SECRET_KEY=your_secret_key_here
+
+CORS_ORIGINS=["http://localhost:5173"]
+
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+Run Backend:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Backend URL:
 
 ```text
 http://127.0.0.1:8000
@@ -133,7 +262,7 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## Frontend
+## Frontend Setup
 
 ```bash
 cd frontend
@@ -143,117 +272,73 @@ npm install
 npm run dev
 ```
 
-Frontend Application:
+Frontend URL:
 
 ```text
 http://localhost:5173
 ```
 
-AI Assistant:
-
-```text
-http://localhost:5173/ai-assistant
-```
-
 ---
 
-# ⚙️ Environment Variables
+## API Endpoints
 
-Create:
+### Authentication
 
 ```text
-backend/.env
+POST /api/v1/auth/register
+POST /api/v1/auth/login
+POST /api/v1/auth/refresh
 ```
 
-Example:
+### Profile
 
-```env
-APP_NAME=CaloriX
-DEBUG=true
-
-DATABASE_URL=sqlite:///./calorixx.db
-
-SECRET_KEY=your-secret-key
-
-CORS_ORIGINS=["http://localhost:5173"]
-
-GEMINI_API_KEY=your-gemini-api-key
-
-REQUIRE_AI_AUTH=false
+```text
+GET  /api/v1/profile
+POST /api/v1/profile
+PUT  /api/v1/profile
 ```
 
----
+### Meals
 
-# 🤖 AI API Endpoints
+```text
+GET  /api/v1/meals
+POST /api/v1/meals
+DELETE /api/v1/meals/{id}
+```
 
-## Generate Meal Suggestions
+### AI Services
 
-```http
+```text
 POST /api/v1/ai/suggest-meals
-```
-
-Example:
-
-```json
-{
-  "ingredients": [
-    "eggs",
-    "tomatoes",
-    "cheese"
-  ]
-}
-```
-
----
-
-## Analyze Food Image
-
-```http
 POST /api/v1/ai/analyze-image
 ```
 
-Accepts:
+---
 
-- Multipart image upload
-- Returns estimated nutrition values
-- Returns detected ingredients
+## 🔮 Future Improvements
+
+- Barcode scanner support
+- OCR nutrition label detection
+- Weekly analytics dashboard
+- Meal history charts
+- Push notifications
+- Mobile application
+- Cloud deployment
+- Social sharing features
 
 ---
 
-# 🧪 ML Features
+## 👨‍💻 Author
 
-### Food Category Prediction
+**Mohamed Alaa**
 
-Predicts food categories based on:
+Full Stack Developer
 
-- Calories
-- Protein
-- Carbohydrates
-- Fat
+GitHub:
+https://github.com/MohameedAlaa
 
 ---
 
-### Similar Foods Recommendation
-
-Uses:
-
-- Feature scaling
-- Euclidean distance similarity
-- Category-aware filtering
-
----
-
-# 🔮 Future Improvements
-
-- Barcode scanner
-- Voice food logging
-- Weekly meal planner
-- AI coach and nutrition chatbot
-- Wearables integration
-- OpenFoodFacts integration
-
----
-
-# 📄 License
+## 📄 License
 
 MIT License
