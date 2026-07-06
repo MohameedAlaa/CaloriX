@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Flame, BarChart3, Target, Lock } from "lucide-react";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
@@ -58,16 +59,16 @@ export default function Home() {
       {/* Feature pills */}
       <div className="relative mt-16 flex flex-wrap items-center justify-center gap-3">
         {[
-          "🔥 Calorie Tracking",
-          "📊 Smart Analytics",
-          "🎯 Custom Goals",
-          "🔒 Secure & Private",
-        ].map((feature) => (
+          { label: "Calorie Tracking", Icon: Flame },
+          { label: "Smart Analytics", Icon: BarChart3 },
+          { label: "Custom Goals", Icon: Target },
+          { label: "Secure & Private", Icon: Lock },
+        ].map(({ label, Icon }) => (
           <span
-            key={feature}
-            className="rounded-full border border-[var(--cx-border)] bg-[var(--cx-surface)] px-4 py-2 text-sm text-[var(--cx-text-muted)] transition-colors hover:border-primary-500/30 hover:text-primary-400"
+            key={label}
+            className="flex items-center gap-1.5 rounded-full border border-[var(--cx-border)] bg-[var(--cx-surface)] px-4 py-2 text-sm text-[var(--cx-text-muted)] transition-colors hover:border-primary-500/30 hover:text-primary-400"
           >
-            {feature}
+            <Icon size={16} /> {label}
           </span>
         ))}
       </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import profileService from "../services/profileService";
+import { Target, Flame, Zap, Dna, Beef, Droplets, Wheat } from "lucide-react";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -44,8 +45,8 @@ export default function Dashboard() {
           <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-primary-500/10 blur-3xl" />
           <div className="pointer-events-none absolute -left-20 -bottom-20 h-60 w-60 rounded-full bg-accent-400/10 blur-3xl" />
 
-          <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-500/10 text-3xl text-primary-400 mb-6">
-            🎯
+          <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-500/10 text-primary-400 mb-6">
+            <Target size={32} />
           </span>
           <h1 className="text-3xl font-bold tracking-tight">
             Complete Your Profile Setup
@@ -104,57 +105,51 @@ export default function Dashboard() {
       {/* ── Top Level Calculations grid ─────────────────────────── */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
         {/* Calories Card */}
-        <div className="cx-card flex items-start gap-4 border-primary-500/20 bg-gradient-to-br from-[var(--cx-surface)] to-primary-500/5">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10 text-2xl text-primary-400">
-            🔥
-          </span>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--cx-text-muted)]">
+        <div className="cx-card border-primary-500/20 bg-gradient-to-br from-[var(--cx-surface)] to-primary-500/5">
+          <div className="flex items-center gap-2 text-primary-400 mb-3">
+            <Flame size={20} />
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--cx-text-muted)]">
               Daily Target Calories
-            </p>
-            <p className="mt-1 text-3xl font-extrabold text-[var(--cx-text)]">
-              {profile.daily_calorie_target.toLocaleString()} <span className="text-sm font-normal text-[var(--cx-text-muted)]">kcal</span>
-            </p>
-            <p className="mt-1 text-xs text-[var(--cx-text-muted)]">
-              Calculated based on your {profile.goal} goal.
-            </p>
+            </h3>
           </div>
+          <p className="text-3xl font-extrabold text-[var(--cx-text)]">
+            {profile.daily_calorie_target.toLocaleString()} <span className="text-sm font-normal text-[var(--cx-text-muted)]">kcal</span>
+          </p>
+          <p className="mt-2 text-xs text-[var(--cx-text-muted)]">
+            Calculated based on your {profile.goal} goal.
+          </p>
         </div>
 
         {/* TDEE Card */}
-        <div className="cx-card flex items-start gap-4">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-2xl text-blue-400">
-            ⚡
-          </span>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--cx-text-muted)]">
+        <div className="cx-card">
+          <div className="flex items-center gap-2 text-blue-400 mb-3">
+            <Zap size={20} />
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--cx-text-muted)]">
               Your TDEE
-            </p>
-            <p className="mt-1 text-3xl font-extrabold text-[var(--cx-text)]">
-              {profile.tdee.toLocaleString()} <span className="text-sm font-normal text-[var(--cx-text-muted)]">kcal</span>
-            </p>
-            <p className="mt-1 text-xs text-[var(--cx-text-muted)]">
-              Total Daily Energy Expenditure (Active Metabolic Rate).
-            </p>
+            </h3>
           </div>
+          <p className="text-3xl font-extrabold text-[var(--cx-text)]">
+            {profile.tdee.toLocaleString()} <span className="text-sm font-normal text-[var(--cx-text-muted)]">kcal</span>
+          </p>
+          <p className="mt-2 text-xs text-[var(--cx-text-muted)]">
+            Total Daily Energy Expenditure (Active Metabolic Rate).
+          </p>
         </div>
 
         {/* BMR Card */}
-        <div className="cx-card flex items-start gap-4">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 text-2xl text-purple-400">
-            🧬
-          </span>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--cx-text-muted)]">
+        <div className="cx-card">
+          <div className="flex items-center gap-2 text-purple-400 mb-3">
+            <Dna size={20} />
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--cx-text-muted)]">
               Your BMR
-            </p>
-            <p className="mt-1 text-3xl font-extrabold text-[var(--cx-text)]">
-              {profile.bmr.toLocaleString()} <span className="text-sm font-normal text-[var(--cx-text-muted)]">kcal</span>
-            </p>
-            <p className="mt-1 text-xs text-[var(--cx-text-muted)]">
-              Basal Metabolic Rate (Energy needed at rest).
-            </p>
+            </h3>
           </div>
+          <p className="text-3xl font-extrabold text-[var(--cx-text)]">
+            {profile.bmr.toLocaleString()} <span className="text-sm font-normal text-[var(--cx-text-muted)]">kcal</span>
+          </p>
+          <p className="mt-2 text-xs text-[var(--cx-text-muted)]">
+            Basal Metabolic Rate (Energy needed at rest).
+          </p>
         </div>
       </div>
 
@@ -172,8 +167,8 @@ export default function Dashboard() {
               {/* Protein */}
               <div>
                 <div className="flex items-center justify-between text-sm font-medium mb-2">
-                  <span className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-emerald-500" />
+                  <span className="flex items-center gap-2 font-semibold uppercase tracking-wider text-xs">
+                    <Beef size={16} className="text-emerald-500" />
                     Protein
                   </span>
                   <span className="text-[var(--cx-text-muted)]">
@@ -190,9 +185,9 @@ export default function Dashboard() {
 
               {/* Fats */}
               <div>
-                <div className="flex items-center justify-between text-sm font-medium mb-2">
-                  <span className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-amber-500" />
+                <div className="flex items-center justify-between text-sm mb-2">
+                  <span className="flex items-center gap-2 font-semibold uppercase tracking-wider text-xs">
+                    <Droplets size={16} className="text-amber-500" />
                     Fats
                   </span>
                   <span className="text-[var(--cx-text-muted)]">
@@ -209,9 +204,9 @@ export default function Dashboard() {
 
               {/* Carbohydrates */}
               <div>
-                <div className="flex items-center justify-between text-sm font-medium mb-2">
-                  <span className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-blue-500" />
+                <div className="flex items-center justify-between text-sm mb-2">
+                  <span className="flex items-center gap-2 font-semibold uppercase tracking-wider text-xs">
+                    <Wheat size={16} className="text-blue-500" />
                     Carbohydrates
                   </span>
                   <span className="text-[var(--cx-text-muted)]">

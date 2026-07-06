@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import mealService from "../services/mealService";
 import mlService from "../services/mlService";
+import { Sparkles, Zap, PlusCircle, Beef, Wheat, Droplets } from "lucide-react";
 
 export default function MealTracker() {
   const [targetDate, setTargetDate] = useState(
@@ -326,9 +327,9 @@ export default function MealTracker() {
               <h2 className="text-xl font-bold tracking-tight">Today's Meals</h2>
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="cx-btn-primary !py-2 !px-4 text-sm"
+                className="cx-btn-primary !py-2 !px-4 text-sm flex items-center gap-2"
               >
-                {showAddForm ? "Close Form" : "+ Add Meal"}
+                {showAddForm ? "Close Form" : <><PlusCircle size={16} /> Add Meal</>}
               </button>
             </div>
 
@@ -474,9 +475,9 @@ export default function MealTracker() {
                               }
                             }}
                             disabled={predicting}
-                            className="shrink-0 text-xs font-medium px-3 py-2 rounded-lg bg-purple-500/15 text-purple-400 hover:bg-purple-500/25 transition-colors disabled:opacity-50"
+                            className="flex items-center gap-1.5 shrink-0 text-xs font-medium px-3 py-2 rounded-lg bg-purple-500/15 text-purple-400 hover:bg-purple-500/25 transition-colors disabled:opacity-50"
                           >
-                            {predicting ? "Predicting..." : "🤖 Auto-detect"}
+                            {predicting ? "Predicting..." : <><Sparkles size={14} /> Auto-detect</>}
                           </button>
                         )}
                       </div>
@@ -567,9 +568,9 @@ export default function MealTracker() {
                             <div className="flex items-center gap-2">
                               <p className="font-medium">{meal.food_name}</p>
                               {meal.food_category && (
-                                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${meal.is_ai_predicted ? "bg-purple-500/15 text-purple-400" : categoryColors[meal.food_category] || "bg-gray-500/15 text-gray-400"}`}>
+                                <span className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${meal.is_ai_predicted ? "bg-purple-500/15 text-purple-400" : categoryColors[meal.food_category] || "bg-gray-500/15 text-gray-400"}`}>
                                   {meal.food_category}
-                                  {meal.is_ai_predicted && " ⚡"}
+                                  {meal.is_ai_predicted && <Zap size={10} />}
                                 </span>
                               )}
                             </div>
@@ -659,17 +660,17 @@ export default function MealTracker() {
               <h3 className="font-bold tracking-tight mb-6 text-lg">Macronutrients</h3>
               <div className="space-y-6">
                 {[
-                  { label: "Protein", color: "bg-emerald-500", dotColor: "bg-emerald-500", key: "protein", targetKey: "target_protein" },
-                  { label: "Carbs", color: "bg-blue-500", dotColor: "bg-blue-500", key: "carbs", targetKey: "target_carbs" },
-                  { label: "Fat", color: "bg-amber-500", dotColor: "bg-amber-500", key: "fat", targetKey: "target_fat" },
-                ].map(({ label, color, dotColor, key, targetKey }) => (
+                  { label: "Protein", color: "bg-emerald-500", Icon: Beef, textColor: "text-emerald-500", key: "protein", targetKey: "target_protein" },
+                  { label: "Carbs", color: "bg-blue-500", Icon: Wheat, textColor: "text-blue-500", key: "carbs", targetKey: "target_carbs" },
+                  { label: "Fat", color: "bg-amber-500", Icon: Droplets, textColor: "text-amber-500", key: "fat", targetKey: "target_fat" },
+                ].map(({ label, color, Icon, textColor, key, targetKey }) => (
                   <div key={key}>
-                    <div className="flex items-center justify-between text-sm font-medium mb-2">
-                      <span className="flex items-center gap-2">
-                        <span className={`h-3 w-3 rounded-full ${dotColor}`} />
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="flex items-center gap-2 font-semibold uppercase tracking-wider text-xs">
+                        <Icon size={16} className={textColor} />
                         {label}
                       </span>
-                      <span className="text-[var(--cx-text)]">
+                      <span className="text-[var(--cx-text)] text-sm font-medium">
                         {summary?.[`total_${key}`] || 0}g{" "}
                         <span className="text-xs text-[var(--cx-text-muted)]">/ {summary?.[targetKey] || "-"}g</span>
                       </span>

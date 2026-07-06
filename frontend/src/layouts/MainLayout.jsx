@@ -1,5 +1,6 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { LayoutDashboard, User, UtensilsCrossed, Sparkles, LogOut } from "lucide-react";
 
 export default function MainLayout() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -24,27 +25,27 @@ export default function MainLayout() {
               <>
                 <Link
                   to="/dashboard"
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-colors hover:text-primary-400"
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-colors hover:text-primary-400 flex items-center gap-1.5"
                 >
-                  Dashboard
+                  <LayoutDashboard size={16} /> Dashboard
                 </Link>
                 <Link
                   to="/profile"
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-colors hover:text-primary-400"
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-colors hover:text-primary-400 flex items-center gap-1.5"
                 >
-                  Profile
+                  <User size={16} /> Profile
                 </Link>
                 <Link
                   to="/meals"
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-colors hover:text-primary-400"
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-colors hover:text-primary-400 flex items-center gap-1.5"
                 >
-                  Meals
+                  <UtensilsCrossed size={16} /> Meals
                 </Link>
                 <Link
                   to="/ai-assistant"
                   className="rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-colors hover:text-primary-400 flex items-center gap-1.5"
                 >
-                  <span>🤖</span> AI Assistant
+                  <Sparkles size={16} /> AI Assistant
                 </Link>
                 <div className="mx-1 h-5 w-px bg-[var(--cx-border)]" />
                 <span className="hidden text-sm text-[var(--cx-text-muted)] sm:inline">
@@ -53,9 +54,9 @@ export default function MainLayout() {
                 <button
                   id="nav-logout"
                   onClick={handleLogout}
-                  className="rounded-lg border border-[var(--cx-border)] px-3 py-1.5 text-sm font-medium text-[var(--cx-text-muted)] transition-all hover:border-red-500/40 hover:text-red-400"
+                  className="flex items-center gap-1.5 rounded-lg border border-[var(--cx-border)] px-3 py-1.5 text-sm font-medium text-[var(--cx-text-muted)] transition-all hover:border-red-500/40 hover:text-red-400"
                 >
-                  Logout
+                  <LogOut size={16} /> Logout
                 </button>
               </>
             ) : (
