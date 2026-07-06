@@ -1,0 +1,40 @@
+{
+  "training_date": "2026-07-05T01:20:25.600447",
+  "model_name": "Random Forest - Meal Type Classifier",
+  "accuracy": 0.9995,
+  "cv_score": 0.99925,
+  "improvement_vs_baseline": 668.8461538461538,
+  "feature_columns": [
+    "protein_g",
+    "carbs_g",
+    "fat_g",
+    "fiber_g",
+    "sugar_g",
+    "sodium_mg",
+    "calories",
+    "glycemic_index",
+    "serving_size_g",
+    "potassium_mg",
+    "calcium_mg",
+    "iron_mg",
+    "magnesium_mg",
+    "cholesterol_mg",
+    "vitamin_a_mcg",
+    "vitamin_c_mg",
+    "vitamin_d_mcg",
+    "vitamin_b12_mcg",
+    "zinc_mg",
+    "phosphorus_mg",
+    "water_g"
+  ],
+  "label_encoder_classes": [
+    "Dairy",
+    "Egyptian",
+    "Fruit",
+    "Grains",
+    "Nuts",
+    "Protein",
+    "Vegetable"
+  ],
+  "dataset_rows": 10000
+}
