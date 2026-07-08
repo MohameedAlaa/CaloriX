@@ -118,7 +118,7 @@ Guidelines:
                 "remaining_fat": 65,
                 "goal": "Maintenance",
             }
-            
+        
         profile = db.query(UserProfile).filter(UserProfile.user_id == user_id).first()
 
         if not profile:
@@ -131,11 +131,13 @@ Guidelines:
                 "goal": "Maintenance",
             }
 
-        # Get today's meals
-        from datetime import date
+        # Get today's meals and recent history
+        from datetime import date, timedelta
+
+        today = date.today()
         today_meals = db.query(Meal).filter(
             Meal.user_id == user_id,
-            Meal.meal_date == date.today()
+            Meal.meal_date == today
         ).all()
 
         total_cals = sum(m.calories for m in today_meals)
@@ -143,7 +145,66 @@ Guidelines:
         total_carbs = sum(m.carbs for m in today_meals)
         total_fat = sum(m.fat for m in today_meals)
 
+        # Recent meals (last 10 entries)
+        recent_meals_query = db.query(Meal).filter(Meal.user_id == user_id).order_by(Meal.meal_date.desc())
+        recent_meals = recent_meals_query.limit(10).all()
+
+        # Build a 7-day nutrition history (day -> totals)
+        nutrition_history = []
+        for i in range(0, 7):
+            d = today - timedelta(days=i)
+            meals_on_d = db.query(Meal).filter(Meal.user_id == user_id, Meal.meal_date == d).all()
+            nutrition_history.append({
+                "date": d.isoformat(),
+                "calories": sum(m.calories for m in meals_on_d),
+                "protein": sum(m.protein for m in meals_on_d),
+                "carbs": sum(m.carbs for m in meals_on_d),
+                "fat": sum(m.fat for m in meals_on_d),
+                "meals": [
+                    {
+                        "id": m.id,
+                        "food_name": m.food_name,
+                        "meal_type": m.meal_type,
+                        "calories": m.calories,
+                        "protein": m.protein,
+                        "carbs": m.carbs,
+                        "fat": m.fat,
+                    }
+                    for m in meals_on_d
+                ],
+            })
+
+        # Serialize meal lists for prompt
+        def serialize_meal(m: Meal) -> dict:
+            return {
+                "id": m.id,
+                "food_name": getattr(m, 'food_name', getattr(m, 'food_name', None)) or getattr(m, 'food_name', None) or getattr(m, 'food_name', None),
+                "meal_type": m.meal_type,
+                "meal_date": m.meal_date.isoformat(),
+                "calories": m.calories,
+                "protein": m.protein,
+                "carbs": m.carbs,
+                "fat": m.fat,
+            }
+
         return {
+            "profile": {
+                "age": profile.age,
+                "gender": profile.gender,
+                "height_cm": profile.height_cm,
+                "weight_kg": profile.weight_kg,
+                "activity_level": profile.activity_level,
+                "goal": profile.goal,
+                "bmr": profile.bmr,
+                "tdee": profile.tdee,
+                "daily_calorie_target": profile.daily_calorie_target,
+                "protein_target_g": profile.protein_target_g,
+                "fat_target_g": profile.fat_target_g,
+                "carb_target_g": profile.carb_target_g,
+            },
+            "today_meals": [serialize_meal(m) for m in today_meals],
+            "recent_meals": [serialize_meal(m) for m in recent_meals],
+            "nutrition_history": nutrition_history,
             "daily_calorie_target": profile.daily_calorie_target,
             "remaining_calories": max(0, profile.daily_calorie_target - total_cals),
             "remaining_protein": max(0, profile.protein_target_g - total_prot),
@@ -337,9 +398,30 @@ Guidelines:
             raise RuntimeError("AI service unavailable: GEMINI_API_KEY not configured")
             
         from app.services.ai_tools import TOOLS, ToolDispatcher
-        
+
+        # Decide whether to enable tools based on user's last message (mutation vs read-only)
+        def _is_mutation_intent(p: str) -> bool:
+            try:
+                # extract the last user message inserted by PromptBuilder: 'User: <msg>\nAssistant:'
+                user_part = p.rsplit('User:', 1)[1]
+                user_msg = user_part.split('Assistant:')[0].strip().lower()
+            except Exception:
+                user_msg = p.lower()
+
+            mutation_keywords = [
+                'add ', 'add meal', 'log ', 'log meal', 'create meal', 'record meal',
+                'delete ', 'delete meal', 'remove ', 'remove meal',
+                'update weight', 'update my weight', 'change weight', 'update meal', 'edit meal'
+            ]
+            return any(k in user_msg for k in mutation_keywords)
+
+        enable_tools = _is_mutation_intent(prompt)
+
         try:
-            model = genai.GenerativeModel(cls.TEXT_MODEL, tools=TOOLS)
+            if enable_tools:
+                model = genai.GenerativeModel(cls.TEXT_MODEL, tools=TOOLS)
+            else:
+                model = genai.GenerativeModel(cls.TEXT_MODEL)
             # Use generate_content directly as we provide the entire history in the prompt.
             response = model.generate_content(prompt)
             

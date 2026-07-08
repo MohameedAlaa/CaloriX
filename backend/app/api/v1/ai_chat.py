@@ -81,6 +81,17 @@ def send_message(
         return ChatService.handle_message(db, session_id, current_user.id, payload.message)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    except RuntimeError as e:
+        msg = str(e).lower()
+        if 'quota' in msg or 'gemini_api_key not configured' in msg or 'quota exceeded' in msg:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=str(e)
+            )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
     except Exception:
         traceback.print_exc()
         raise
