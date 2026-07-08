@@ -4,6 +4,7 @@ import json
 import logging
 from typing import Optional
 
+import traceback
 import google.generativeai as genai
 from sqlalchemy.orm import Session
 
@@ -373,7 +374,8 @@ Guidelines:
             return response.text
             
         except Exception as e:
-            logger.error(f"AI chat failed: {e}")
+            traceback.print_exc()
+            logger.exception("AI chat failed")
             raise RuntimeError(f"Chat failed: {str(e)}")
 
 # Singleton instance

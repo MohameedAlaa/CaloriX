@@ -89,7 +89,6 @@ class ChatService:
                 
             try:
                 # Use AI service to generate a summary
-                from app.services.ai_service import ai_service
                 import google.generativeai as genai
                 from app.core.config import get_settings
                 settings = get_settings()

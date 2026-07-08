@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+import traceback
 
 from app.database.session import get_db
 from app.auth.dependencies import get_current_user
@@ -80,5 +81,6 @@ def send_message(
         return ChatService.handle_message(db, session_id, current_user.id, payload.message)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        traceback.print_exc()
+        raise

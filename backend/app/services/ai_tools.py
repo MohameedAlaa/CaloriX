@@ -2,13 +2,14 @@ from sqlalchemy.orm import Session
 from app.services.meal_service import MealService
 from app.services.profile_service import ProfileService
 from app.schemas.meal import MealCreate
+from google.generativeai.types import FunctionDeclaration
 
 # Define Tool Schemas that Gemini expects
 TOOLS = [
-    {
-        "name": "add_meal",
-        "description": "Log a new meal to the user's meal tracker.",
-        "parameters": {
+    FunctionDeclaration(
+        name="add_meal",
+        description="Log a new meal to the user's meal tracker.",
+        parameters={
             "type": "object",
             "properties": {
                 "name": {"type": "string", "description": "The name of the meal/food."},
@@ -20,29 +21,25 @@ TOOLS = [
             },
             "required": ["name", "meal_type", "calories", "protein_g", "carbs_g", "fat_g"]
         }
-    },
-    {
-        "name": "delete_meal",
-        "description": "Delete a meal by its ID.",
-        "parameters": {
+    ),
+    FunctionDeclaration(
+        name="delete_meal",
+        description="Delete a meal by its ID.",
+        parameters={
             "type": "object",
-            "properties": {
-                "meal_id": {"type": "integer", "description": "ID of the meal to delete."}
-            },
+            "properties": {"meal_id": {"type": "integer", "description": "ID of the meal to delete."}},
             "required": ["meal_id"]
         }
-    },
-    {
-        "name": "update_weight",
-        "description": "Update the user's current weight in their profile.",
-        "parameters": {
+    ),
+    FunctionDeclaration(
+        name="update_weight",
+        description="Update the user's current weight in their profile.",
+        parameters={
             "type": "object",
-            "properties": {
-                "weight_kg": {"type": "number", "description": "New weight in kg."}
-            },
+            "properties": {"weight_kg": {"type": "number", "description": "New weight in kg."}},
             "required": ["weight_kg"]
         }
-    }
+    )
 ]
 
 class ToolDispatcher:
