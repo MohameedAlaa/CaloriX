@@ -70,15 +70,16 @@ export default function AIAssistantPage() {
     try {
       // Map AI response to meal creation payload
       const payload = {
-        name: mealData.name,
+        food_name: mealData.name,
         meal_type: mealData.meal_type || "Snack",
         calories: mealData.estimated_calories || 0,
-        protein_g: mealData.estimated_protein_g || 0,
-        carbs_g: mealData.estimated_carbs_g || 0,
-        fat_g: mealData.estimated_fat_g || 0,
+        protein: mealData.estimated_protein_g || 0,
+        carbs: mealData.estimated_carbs_g || 0,
+        fat: mealData.estimated_fat_g || 0,
+        meal_date: new Date().toISOString().split("T")[0],
       };
       
-      await mealService.createMeal(payload);
+      await mealService.addMeal(payload);
       showNotification(`Added ${mealData.name} to today's meals!`);
     } catch (err) {
       alert("Failed to add meal. " + (err.response?.data?.detail || ""));
@@ -95,17 +96,25 @@ export default function AIAssistantPage() {
     if (!analysisResult) return;
     setAddingVisionMeal(true);
     try {
+      const category = ["Breakfast", "Lunch", "Dinner", "Snack"].includes(
+        analysisResult.predicted_meal_category
+      )
+        ? analysisResult.predicted_meal_category
+        : "Snack";
+
       const payload = {
-        name: analysisResult.food_name || "Analyzed Meal",
-        meal_type: analysisResult.meal_type || "Snack",
+        food_name:
+          analysisResult.detected_food_items?.[0] || "Analyzed Meal",
+        meal_type: category,
         calories: analysisResult.estimated_calories || 0,
-        protein_g: analysisResult.estimated_protein_g || 0,
-        carbs_g: analysisResult.estimated_carbs_g || 0,
-        fat_g: analysisResult.estimated_fat_g || 0,
+        protein: analysisResult.estimated_protein_g || 0,
+        carbs: analysisResult.estimated_carbs_g || 0,
+        fat: analysisResult.estimated_fat_g || 0,
+        meal_date: new Date().toISOString().split("T")[0],
       };
       
-      await mealService.createMeal(payload);
-      showNotification(`Added ${payload.name} to today's meals!`);
+      await mealService.addMeal(payload);
+      showNotification(`Added ${payload.food_name} to today's meals!`);
     } catch (err) {
       alert("Failed to add meal. " + (err.response?.data?.detail || ""));
     } finally {
