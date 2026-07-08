@@ -7,6 +7,7 @@ import {
   Sparkles,
   LogOut,
   ChartBar,
+  ChevronDown,
 } from "lucide-react";
 
 export default function MainLayout() {
@@ -44,14 +45,6 @@ export default function MainLayout() {
                 </Link>
 
                 <Link
-                  to="/profile"
-                  className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-all hover:bg-[var(--cx-surface-elevated)] hover:text-primary-400"
-                >
-                  <User size={16} />
-                  Profile
-                </Link>
-
-                <Link
                   to="/meals"
                   className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-all hover:bg-[var(--cx-surface-elevated)] hover:text-primary-400"
                 >
@@ -85,21 +78,31 @@ export default function MainLayout() {
 
                 <div className="mx-1 h-5 w-px bg-[var(--cx-border)]" />
 
-                {/* Username */}
-                <span className="hidden items-center gap-2 text-sm text-[var(--cx-text-muted)] sm:flex">
-                  <User size={14} />
-                  {user?.username}
-                </span>
+                <details className="relative">
+                  <summary className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-all hover:bg-[var(--cx-surface-elevated)] hover:text-primary-400 [&::-webkit-details-marker]:hidden">
+                    <User size={14} />
+                    <span>{user?.username ?? ""}</span>
+                    <ChevronDown size={14} />
+                  </summary>
 
-                {/* Logout */}
-                <button
-                  id="nav-logout"
-                  onClick={handleLogout}
-                  className="flex items-center gap-1.5 rounded-lg border border-[var(--cx-border)] px-3 py-1.5 text-sm font-medium text-[var(--cx-text-muted)] transition-all hover:border-red-500/40 hover:bg-red-500/5 hover:text-red-400"
-                >
-                  <LogOut size={16} />
-                  Logout
-                </button>
+                  <div className="absolute right-0 z-20 mt-2 w-40 rounded-2xl border border-[var(--cx-border)] bg-[var(--cx-surface)] shadow-lg">
+                    <Link
+                      to="/profile"
+                      className="flex w-full items-center gap-2 rounded-t-2xl px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-colors hover:bg-[var(--cx-surface-elevated)] hover:text-primary-400"
+                    >
+                      <User size={16} />
+                      Profile
+                    </Link>
+                    <button
+                      id="nav-logout"
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 rounded-b-2xl px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-colors hover:bg-[var(--cx-surface-elevated)] hover:text-red-400"
+                    >
+                      <LogOut size={16} />
+                      Logout
+                    </button>
+                  </div>
+                </details>
               </>
             ) : (
               <>
