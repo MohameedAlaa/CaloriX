@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
 from app.database.session import Base, engine
+import app.models  # Ensures all models are registered with Base.metadata
 from app.api.router import router as api_router
 
 settings = get_settings()

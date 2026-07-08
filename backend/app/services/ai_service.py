@@ -327,6 +327,54 @@ Guidelines:
             logger.error(f"AI image analysis failed: {e}")
             raise RuntimeError(f"Image analysis failed: {str(e)}")
 
+    @classmethod
+    def chat_with_coach(cls, db: Session, user_id: int, prompt: str) -> str:
+        """
+        Chat with AI Coach using Function Calling.
+        """
+        if not settings.GEMINI_API_KEY:
+            raise RuntimeError("AI service unavailable: GEMINI_API_KEY not configured")
+            
+        from app.services.ai_tools import TOOLS, ToolDispatcher
+        
+        try:
+            model = genai.GenerativeModel(cls.TEXT_MODEL, tools=TOOLS)
+            # Use generate_content directly as we provide the entire history in the prompt.
+            response = model.generate_content(prompt)
+            
+            # Check if Gemini wants to call a function
+            if response.candidates and response.candidates[0].content.parts:
+                part = response.candidates[0].content.parts[0]
+                if part.function_call:
+                    func_call = part.function_call
+                    tool_name = func_call.name
+                    args = dict(func_call.args)
+                    
+                    # Dispatch to tool
+                    tool_result_str = ToolDispatcher.dispatch(db, user_id, tool_name, args)
+                    
+                    # Return the tool result back to Gemini so it can answer the user
+                    messages = [
+                        {"role": "user", "parts": [prompt]},
+                        {"role": "model", "parts": [part]},
+                        {"role": "user", "parts": [
+                            genai.protos.Part(
+                                function_response=genai.protos.FunctionResponse(
+                                    name=tool_name,
+                                    response={"result": tool_result_str}
+                                )
+                            )
+                        ]}
+                    ]
+                    
+                    final_response = model.generate_content(messages)
+                    return final_response.text
+                    
+            return response.text
+            
+        except Exception as e:
+            logger.error(f"AI chat failed: {e}")
+            raise RuntimeError(f"Chat failed: {str(e)}")
 
 # Singleton instance
 ai_service = AIService()

@@ -8,8 +8,9 @@ import Profile from "./pages/Profile";
 import MealTracker from "./pages/MealTracker";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
-
+import Metrics from "./pages/Metrics";
 import AIAssistant from "./pages/AIAssistant";
+import AIChat from "./pages/AIChat";
 
 function App() {
   return (
@@ -66,6 +67,22 @@ function App() {
           element={
             <ProtectedRoute>
               <AIAssistant />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai-chat"
+          element={
+            <ProtectedRoute>
+              <AIChat />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/metrics"
+          element={
+            <ProtectedRoute>
+              <Metrics />
             </ProtectedRoute>
           }
         />

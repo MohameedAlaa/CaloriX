@@ -6,6 +6,7 @@ import {
   UtensilsCrossed,
   Sparkles,
   LogOut,
+  ChartBar,
 } from "lucide-react";
 
 export default function MainLayout() {
@@ -63,7 +64,23 @@ export default function MainLayout() {
                   className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-all hover:bg-[var(--cx-surface-elevated)] hover:text-primary-400"
                 >
                   <Sparkles size={16} />
-                  AI Assistant
+                  AI Vision
+                </Link>
+
+                <Link
+                  to="/ai-chat"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-all hover:bg-[var(--cx-surface-elevated)] hover:text-primary-400"
+                >
+                  <Sparkles size={16} />
+                  AI Coach
+                </Link>
+
+                <Link
+                  to="/metrics"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-[var(--cx-text-muted)] transition-all hover:bg-[var(--cx-surface-elevated)] hover:text-primary-400"
+                >
+                  <ChartBar size={16} />
+                  Metrics
                 </Link>
 
                 <div className="mx-1 h-5 w-px bg-[var(--cx-border)]" />
