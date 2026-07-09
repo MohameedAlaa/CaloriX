@@ -1,7 +1,7 @@
 {
   "dataset_name": "CaloriX_Nutrition_Dataset.csv",
-  "dataset_size": 24000,
-  "training_date": "2026-07-09 12:58:23",
+  "dataset_size": 1258,
+  "training_date": "2026-07-09 15:00:08",
   "feature_names": [
     "category",
     "cuisine",
