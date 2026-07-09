@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, create_model, ConfigDict
 
 # Determine the absolute path to the metadata.json
 METADATA_PATH = Path(__file__).parent.parent / "ml" / "metadata.json"
@@ -10,16 +10,20 @@ METADATA_PATH = Path(__file__).parent.parent / "ml" / "metadata.json"
 try:
     with open(METADATA_PATH, "r", encoding="utf-8") as f:
         metadata = json.load(f)
-        feature_columns = metadata.get("feature_columns", [])
-except Exception as e:
-    feature_columns = []
+        feature_names = metadata.get("feature_names", metadata.get("feature_columns", []))
+except Exception:
+    feature_names = []
 
 # Dynamically create the Pydantic schema for features
-# Each feature is expected to be a float, and is required (...)
-feature_fields = {feature: (float, ...) for feature in feature_columns}
+# Each feature is optional at the API layer and populated by the ML service as needed.
+feature_fields = {feature: (Optional[Any], None) for feature in feature_names}
 
 # The dynamically generated schema
-PredictionRequest = create_model("PredictionRequest", **feature_fields)
+PredictionRequest = create_model(
+    "PredictionRequest",
+    __config__=ConfigDict(extra="ignore"),
+    **feature_fields,
+)
 
 
 class PredictionResponse(BaseModel):
