@@ -290,13 +290,13 @@ export default function AIChatPage() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Message AI Coach..."
-              className="w-full rounded-2xl border border-[var(--cx-border)] bg-[var(--cx-surface-elevated)] py-4 pl-5 pr-16 text-sm text-[var(--cx-text)] placeholder-[var(--cx-text-muted)] shadow-lg transition-all focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              className="flex-1 bg-transparent px-4 py-3 text-sm text-[var(--cx-text)] placeholder-[var(--cx-text-muted)] outline-none"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={!inputValue.trim() || loading}
-              className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-primary-500 text-white shadow-md transition-all hover:scale-105 hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
+              className="ml-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary-500 text-white transition-all hover:scale-105 hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Send size={18} />
             </button>
