@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -8,11 +9,14 @@ import {
   LogOut,
   ChartBar,
   ChevronDown,
+  Menu,
+  X,
 } from "lucide-react";
 
 export default function MainLayout() {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -33,7 +37,7 @@ export default function MainLayout() {
           </Link>
 
           {/* Navigation */}
-          <nav className="flex items-center gap-3">
+          <nav className="hidden md:flex items-center gap-3">
             {isAuthenticated ? (
               <>
                 <Link
@@ -122,7 +126,62 @@ export default function MainLayout() {
               </>
             )}
           </nav>
-        </div>
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden rounded-lg p-2"
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          </div>
+
+          {menuOpen && (
+            <div className="md:hidden border-t border-[var(--cx-border)] bg-[var(--cx-surface)]">
+              <div className="flex flex-col p-4 gap-2">
+
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                >
+                  Dashboard
+                </Link>
+
+                <Link
+                  to="/meals"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                >
+                  Meals
+                </Link>
+
+                <Link
+                  to="/ai-assistant"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                >
+                  AI Vision
+                </Link>
+
+                <Link
+                  to="/ai-chat"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                >
+                  AI Coach
+                </Link>
+
+                <Link
+                  to="/metrics"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                >
+                  Metrics
+                </Link>
+
+              </div>
+            </div>
+          )}
       </header>
 
       {/* Page Content */}

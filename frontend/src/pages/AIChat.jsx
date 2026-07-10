@@ -9,6 +9,7 @@ export default function AIChatPage() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export default function AIChatPage() {
       setSessions([newSession, ...sessions]);
       setActiveSessionId(newSession.id);
       setMessages([]);
+      setSidebarOpen(false);
     } catch (error) {
       console.error("Failed to create session:", error);
     }
@@ -108,9 +110,23 @@ export default function AIChatPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] bg-[var(--cx-bg)] overflow-hidden">
+    <div className="relative flex h-[calc(100vh-4rem)] bg-[var(--cx-bg)] overflow-hidden">
       {/* Sidebar */}
-      <div className="w-64 flex-shrink-0 border-r border-[var(--cx-border)] bg-[var(--cx-surface)] flex flex-col">
+      <div
+        className={`
+          fixed md:static
+          top-16 left-0
+          z-40
+          h-[calc(100vh-4rem)]
+          w-64
+          border-r border-[var(--cx-border)]
+          bg-[var(--cx-surface)]
+          flex flex-col
+          transition-transform duration-300
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0
+        `}
+      >
         <div className="p-4 border-b border-[var(--cx-border)]">
           <button
             onClick={createNewSession}
@@ -123,7 +139,10 @@ export default function AIChatPage() {
           {sessions.map((session) => (
             <div
               key={session.id}
-              onClick={() => setActiveSessionId(session.id)}
+              onClick={() => {
+                setActiveSessionId(session.id);
+                setSidebarOpen(false);
+              }}
               className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
                 activeSessionId === session.id
                   ? "bg-primary-500/10 text-primary-400"
@@ -146,6 +165,14 @@ export default function AIChatPage() {
       </div>
 
       {/* Main Chat Area */}
+      <div className="md:hidden p-3 border-b border-[var(--cx-border)]">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="cx-btn-secondary"
+        >
+          Chats
+        </button>
+      </div>
       <div className="flex-1 flex flex-col min-w-0">
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
