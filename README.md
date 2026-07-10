@@ -81,7 +81,43 @@ CaloriX is a full-stack web application for intelligent calorie tracking and nut
 - Visual progress tracking
 
 ---
+## 📸 Screenshots
 
+### Dashboard
+
+<p align="center">
+  <img src="screenshots/dashboard.png" width="900">
+</p>
+
+### Meal Tracker
+
+<p align="center">
+  <img src="screenshots/meals.png" width="900">
+</p>
+
+### AI Vision
+
+<p align="center">
+  <img src="screenshots/vision1.png" width="900">
+</p>
+<p align="center">
+  <img src="screenshots/vision2.png" width="900">
+</p>
+
+### AI Coach
+
+<p align="center">
+  <img src="screenshots/chat.png" width="900">
+</p>
+
+### Metrics
+
+<p align="center">
+  <img src="screenshots/metrics.png" width="900">
+</p>
+
+
+---
 ## 🧠 Machine Learning Pipeline
 
 CaloriX uses a production-ready ML pipeline with the following components:
@@ -480,6 +516,10 @@ GET    /api/v1/metrics?range=7D       # Get nutrition metrics
 - ✅ Created proper error handling and logging throughout ML pipeline
 
 ### Frontend & API Configuration
+- ✅ Responsive UI for desktop, tablet, and mobile devices
+- ✅ Mobile hamburger navigation
+- ✅ AI Coach responsive chat interface
+- ✅ Interactive quick prompt suggestions
 - ✅ Configured frontend to connect to backend at correct URL (http://localhost:8001)
 - ✅ Implemented JWT token handling and authentication flow
 - ✅ Created food search with real-time autocomplete
@@ -526,11 +566,14 @@ GET    /api/v1/metrics?range=7D       # Get nutrition metrics
    - OCR for nutrition label extraction
 
 3. **Frontend/UX**
-   - Mobile-responsive design improvements
-   - Progressive Web App (PWA) support
-   - Offline mode with data sync
-   - Advanced data visualization and charts
-   - Export meal history and reports
+  - Push notifications
+  - Voice interaction with AI Coach
+  - Camera shortcut inside AI Coach
+  - Dark/Light theme toggle
+  - Progressive Web App (PWA) support
+  - Offline mode with data sync
+  - Advanced data visualization and charts
+  - Export meal history and reports
 
 4. **Backend/Infrastructure**
    - Database migration to PostgreSQL for production
@@ -554,6 +597,7 @@ GET    /api/v1/metrics?range=7D       # Get nutrition metrics
 Full Stack Developer | AI/ML Enthusiast
 
 GitHub: https://github.com/MohameedAlaa
+LinkedIn:https://www.linkedin.com/in/mohameedalaa/
 
 ---
 
