@@ -81,7 +81,43 @@ CaloriX is a full-stack web application for intelligent calorie tracking and nut
 - Visual progress tracking
 
 ---
+## 📸 Screenshots
 
+### Dashboard
+
+<p align="center">
+  <img src="screenshots/dashboard.png" width="900">
+</p>
+
+### Meal Tracker
+
+<p align="center">
+  <img src="screenshots/meals.png" width="900">
+</p>
+
+### AI Vision
+
+<p align="center">
+  <img src="screenshots/vision1.png" width="900">
+</p>
+<p align="center">
+  <img src="screenshots/vision2.png" width="900">
+</p>
+
+### AI Coach
+
+<p align="center">
+  <img src="screenshots/chat.png" width="900">
+</p>
+
+### Metrics
+
+<p align="center">
+  <img src="screenshots/metrics.png" width="900">
+</p>
+
+
+---
 ## 🧠 Machine Learning Pipeline
 
 CaloriX uses a production-ready ML pipeline with the following components:
