@@ -115,6 +115,7 @@ export default function AIChatPage() {
       <div
         className={`
           fixed md:static
+          md:flex
           top-16 left-0
           z-40
           h-[calc(100vh-4rem)]
@@ -165,6 +166,13 @@ export default function AIChatPage() {
       </div>
 
       {/* Main Chat Area */}
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 top-16 z-30 bg-black/50 md:hidden"
+        />
+      )}
       <div className="md:hidden p-3 border-b border-[var(--cx-border)]">
         <button
           onClick={() => setSidebarOpen(true)}
@@ -176,7 +184,7 @@ export default function AIChatPage() {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="w-full max-w-5xl mx-auto space-y-6">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center mt-20 text-[var(--cx-text-muted)]">
                 <div className="mb-4 rounded-full bg-[var(--cx-surface-elevated)] p-4">
@@ -196,18 +204,40 @@ export default function AIChatPage() {
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-2xl px-5 py-3 ${
+                    className={`w-fit max-w-[92%] sm:max-w-[85%] rounded-3xl px-5 py-4 shadow-lg ${
                       msg.role === "user"
                         ? "bg-primary-500 text-white"
                         : "bg-[var(--cx-surface-elevated)] text-[var(--cx-text)] border border-[var(--cx-border)]"
                     }`}
                   >
                     {msg.role === "user" ? (
-                      <p className="whitespace-pre-wrap text-sm">{msg.content}</p>
+                      <>
+                        <div className="mb-1 flex justify-end">
+                            <span className="rounded-full bg-primary-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary-300">
+                              You
+                            </span>
+                          </div>
+
+                        <p className="whitespace-pre-wrap text-sm">
+                          {msg.content}
+                        </p>
+                      </>
                     ) : (
-                      <div className="prose prose-sm prose-invert max-w-none text-sm">
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
-                      </div>
+                      <>
+                        <div className="mb-2 flex items-center gap-2">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-500 text-sm font-bold text-white">
+                            AI
+                          </div>
+
+                          <span className="text-sm font-semibold text-[var(--cx-text)]">
+                            Nutrition Coach
+                          </span>
+                        </div>
+
+                        <div className="prose prose-sm prose-invert max-w-none text-sm">
+                          <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
@@ -215,7 +245,7 @@ export default function AIChatPage() {
             )}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-[var(--cx-surface-elevated)] border border-[var(--cx-border)] rounded-2xl px-5 py-3">
+                <div className="bg-[var(--cx-surface-elevated)] border border-[var(--cx-border)] rounded-3xl px-5 py-4">
                   <div className="flex space-x-1 items-center h-5">
                     <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
                     <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>

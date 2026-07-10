@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   LayoutDashboard,
@@ -16,6 +16,7 @@ import {
 export default function MainLayout() {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -139,47 +140,93 @@ export default function MainLayout() {
             <div className="md:hidden border-t border-[var(--cx-border)] bg-[var(--cx-surface)]">
               <div className="flex flex-col p-4 gap-2">
 
-                <Link
-                  to="/dashboard"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
-                >
-                  Dashboard
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    {/* Dashboard */}
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                    >
+                      Dashboard
+                    </Link>
 
-                <Link
-                  to="/meals"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
-                >
-                  Meals
-                </Link>
+                    <Link
+                      to="/meals"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                    >
+                      Meals
+                    </Link>
 
-                <Link
-                  to="/ai-assistant"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
-                >
-                  AI Vision
-                </Link>
+                    <Link
+                      to="/ai-assistant"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                    >
+                      AI Vision
+                    </Link>
 
-                <Link
-                  to="/ai-chat"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
-                >
-                  AI Coach
-                </Link>
+                    <Link
+                      to="/ai-chat"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                    >
+                      AI Coach
+                    </Link>
 
-                <Link
-                  to="/metrics"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
-                >
-                  Metrics
-                </Link>
+                    <Link
+                      to="/metrics"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                    >
+                      Metrics
+                    </Link>
+
+                    <div className="my-2 border-t border-[var(--cx-border)]" />
+
+                    <Link
+                      to="/profile"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                    >
+                      <User size={16} />
+                      Profile
+                    </Link>
+
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        handleLogout();
+                      }}
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-[var(--cx-surface-elevated)] hover:text-red-400"
+                    >
+                      <LogOut size={16} />
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-lg px-3 py-2 hover:bg-[var(--cx-surface-elevated)]"
+                    >
+                      Sign in
+                    </Link>
+
+                    <Link
+                      to="/register"
+                      onClick={() => setMenuOpen(false)}
+                      className="cx-btn-primary text-center"
+                    >
+                      Get Started
+                    </Link>
+                  </>
+                )}
 
               </div>
+
             </div>
           )}
       </header>
@@ -190,9 +237,11 @@ export default function MainLayout() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[var(--cx-border)] py-6 text-center text-sm text-[var(--cx-text-muted)]">
-        © {new Date().getFullYear()} CaloriX. All rights reserved.
-      </footer>
+      {location.pathname !== "/ai-chat" && (
+        <footer className="border-t border-[var(--cx-border)] py-6 text-center text-sm text-[var(--cx-text-muted)]">
+          © {new Date().getFullYear()} CaloriX. All rights reserved.
+        </footer>
+      )}
     </div>
   );
 }
