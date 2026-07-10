@@ -10,6 +10,14 @@ export default function AIChatPage() {
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const quickPrompts = [
+    "Create a healthy meal plan",
+    "Calculate today's calories",
+    "Suggest a high protein meal",
+    "Analyze my food",
+  ];
+
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -120,7 +128,7 @@ export default function AIChatPage() {
           z-40
           h-[calc(100vh-4rem)]
           w-64
-          border-r border-[var(--cx-border)]
+          border-r shadow-xl border-[var(--cx-border)]
           bg-[var(--cx-surface)]
           flex flex-col
           transition-transform duration-300
@@ -196,6 +204,19 @@ export default function AIChatPage() {
                 <p className="mt-2 text-sm max-w-md">
                   I am your AI Nutrition Coach. Ask me about your diet, ask for meal plans, or tell me to log a meal for you.
                 </p>
+                <div className="mt-8 grid w-full max-w-xl grid-cols-1 gap-3 sm:grid-cols-2">
+                  {quickPrompts.map((prompt) => (
+                    <button
+                      key={prompt}
+                      onClick={() => setInputValue(prompt)}
+                      className="rounded-2xl border border-[var(--cx-border)] bg-[var(--cx-surface-elevated)] p-4 text-left transition-all hover:border-primary-500 hover:bg-primary-500/10"
+                    >
+                      <p className="font-medium text-[var(--cx-text)]">
+                        {prompt}
+                      </p>
+                    </button>
+                  ))}
+                </div>
               </div>
             ) : (
               messages.map((msg, idx) => (
@@ -259,20 +280,23 @@ export default function AIChatPage() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 border-t border-[var(--cx-border)] bg-[var(--cx-surface)]">
-          <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto relative">
+        <div className="border-t border-[var(--cx-border)] bg-[var(--cx-bg)] px-3 pb-4 pt-3">
+          <form
+            onSubmit={handleSendMessage}
+            className="relative mx-auto flex w-full max-w-4xl items-center rounded-3xl border border-[var(--cx-border)] bg-[var(--cx-surface)] p-2 shadow-xl"
+          >
             <input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Message AI Coach..."
-              className="w-full bg-[var(--cx-surface-elevated)] border border-[var(--cx-border)] rounded-xl py-3 pl-4 pr-12 text-sm text-[var(--cx-text)] placeholder-[var(--cx-text-muted)] focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+              className="w-full rounded-2xl border border-[var(--cx-border)] bg-[var(--cx-surface-elevated)] py-4 pl-5 pr-16 text-sm text-[var(--cx-text)] placeholder-[var(--cx-text-muted)] shadow-lg transition-all focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={!inputValue.trim() || loading}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg text-primary-400 hover:bg-primary-500/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-primary-500 text-white shadow-md transition-all hover:scale-105 hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Send size={18} />
             </button>
