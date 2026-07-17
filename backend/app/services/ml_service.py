@@ -134,7 +134,13 @@ class MLService:
         total_macro = row["protein_g"] + row["carbs_g"] + row["fat_g"]
         row["energy_density"] = row["calories"] / total_macro if total_macro else 0.0
 
-        return pd.DataFrame([row], columns=self.feature_names)
+        # Preserve food_name for the NearestNeighbors recommender string construction
+        if "food_name" in features_dict:
+            row["food_name"] = features_dict.get("food_name", "")
+
+        # Preserve the original feature order for the classifier, appending any extra keys (like food_name)
+        ordered_columns = self.feature_names + [k for k in row.keys() if k not in self.feature_names]
+        return pd.DataFrame([row], columns=ordered_columns)
 
     def predict(self, features_dict: dict) -> str:
         """Predict food category based on features."""
@@ -155,6 +161,11 @@ class MLService:
             [float(feature_row.get(col, 0.0)) for col in self.recommender["numeric_columns"]],
             dtype=float,
         ).reshape(1, -1)
+        
+        if "scaler" in self.recommender:
+            numeric_values = self.recommender["scaler"].transform(numeric_values)
+        if "numeric_weight" in self.recommender:
+            numeric_values = numeric_values * self.recommender["numeric_weight"]
 
         text_value = " ".join(
             [

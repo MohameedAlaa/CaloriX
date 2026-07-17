@@ -39,6 +39,7 @@ export default function MealTracker() {
   // ── Similar Foods State ────────────────────────────────────────────
   const [similarFoods, setSimilarFoods] = useState([]);
   const [similarLoading, setSimilarLoading] = useState(false);
+  const [hasFetchedSimilar, setHasFetchedSimilar] = useState(false);
 
   // ── Fetch Meals ────────────────────────────────────────────────────
   useEffect(() => {
@@ -115,11 +116,12 @@ export default function MealTracker() {
   const fetchSimilarFoods = async (features, foodName) => {
     setSimilarLoading(true);
     setSimilarFoods([]);
+    setHasFetchedSimilar(false);
     try {
       const res = await mlService.getSimilarFoods(features, 4);
       // Filter out the food itself if it appears in the results
       const filtered = (res.results || []).filter(
-        (r) => r.food_name !== foodName
+        (r) => r.food_name.toLowerCase() !== foodName.toLowerCase()
       );
       setSimilarFoods(filtered.slice(0, 3));
     } catch (err) {
@@ -127,6 +129,7 @@ export default function MealTracker() {
       setSimilarFoods([]);
     } finally {
       setSimilarLoading(false);
+      setHasFetchedSimilar(true);
     }
   };
 
@@ -237,6 +240,7 @@ export default function MealTracker() {
       });
       setSearchQuery("");
       setSimilarFoods([]);
+      setHasFetchedSimilar(false);
       setShowAddForm(false);
       fetchMeals();
     } catch {
@@ -257,7 +261,7 @@ export default function MealTracker() {
   };
 
   // ── Quick-add from similar foods ───────────────────────────────────
-  const handleQuickAdd = (food) => {
+  const handleQuickAdd = async (food) => {
     const cals = food.features?.calories || 0;
     const prot = food.features?.protein_g || 0;
     const carb = food.features?.carbs_g || 0;
@@ -273,6 +277,21 @@ export default function MealTracker() {
       is_ai_predicted: false,
     }));
     setSearchQuery(food.food_name);
+    
+    // Automatically request new recommendations for the newly selected food
+    const features = {
+      protein_g: prot,
+      carbs_g: carb,
+      fat_g: ft,
+      fiber_g: 0, sugar_g: 0, sodium_mg: 0,
+      calories: cals,
+      glycemic_index: 0, serving_size_g: food.features?.serving_size_g || 0,
+      potassium_mg: 0, calcium_mg: 0, iron_mg: 0, magnesium_mg: 0,
+      cholesterol_mg: 0, vitamin_a_mcg: 0, vitamin_c_mg: 0,
+      vitamin_d_mcg: 0, vitamin_b12_mcg: 0, zinc_mg: 0,
+      phosphorus_mg: 0, water_g: 0,
+    };
+    await fetchSimilarFoods(features, food.food_name);
   };
 
   const { summary, meals } = data;
@@ -485,48 +504,104 @@ export default function MealTracker() {
                   </div>
 
                   {/* ── Similar Foods Recommendations ────────────────────── */}
-                  {(similarFoods.length > 0 || similarLoading) && (
-                    <div className="mt-4 pt-4 border-t border-[var(--cx-border)]">
-                      <div className="flex items-center gap-2 mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-purple-400" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                        </svg>
-                        <h4 className="font-semibold text-sm">AI Recommendations</h4>
+                  {(similarFoods.length > 0 || similarLoading || hasFetchedSimilar) && (
+                    <div className="mt-8">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Sparkles className="h-5 w-5 text-primary-400" />
+                        <h4 className="font-bold text-base tracking-tight text-primary-50">AI Recommendations</h4>
                       </div>
 
                       {similarLoading ? (
-                        <div className="flex items-center justify-center py-4">
-                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-purple-500/30 border-t-purple-500" />
-                          <span className="ml-2 text-xs text-[var(--cx-text-muted)]">Finding similar foods...</span>
+                        <div className="flex items-center justify-center py-8 rounded-2xl bg-[var(--cx-surface-elevated)] border border-[var(--cx-border)]/50 backdrop-blur-sm">
+                          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary-500/30 border-t-primary-500" />
+                          <span className="ml-3 text-sm font-medium text-[var(--cx-text-muted)]">Analyzing nutritional profile...</span>
+                        </div>
+                      ) : similarFoods.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-8 rounded-2xl bg-[var(--cx-surface-elevated)] border border-[var(--cx-border)]/50">
+                          <p className="text-sm font-medium text-[var(--cx-text)]">No similar foods found.</p>
+                          <p className="text-xs text-[var(--cx-text-muted)] mt-1">Try searching for another food.</p>
                         </div>
                       ) : (
-                        <div className="space-y-2">
-                          <p className="text-xs text-[var(--cx-text-muted)] mb-2">Similar foods you might enjoy. Click to replace:</p>
-                          {similarFoods.map((food, i) => (
-                            <button
-                              key={i}
-                              type="button"
-                              onClick={() => handleQuickAdd(food)}
-                              className="w-full text-left rounded-lg border border-[var(--cx-border)] p-3 hover:border-purple-500/40 hover:bg-purple-500/5 transition-all group bg-[var(--cx-surface-elevated)]"
-                            >
-                              <div className="flex items-center justify-between">
-                                <p className="font-medium text-sm group-hover:text-purple-400 transition-colors">
-                                  {food.food_name}
-                                </p>
+                        <div className="grid gap-3 sm:grid-cols-1">
+                          <p className="text-xs font-medium text-[var(--cx-text-muted)] mb-1">Click a card to replace your current selection:</p>
+                          {similarFoods.map((food, i) => {
+                            // Keep raw values for calculating accurate differences
+                            const rawCals = food.features?.calories || 0;
+                            const rawProt = food.features?.protein_g || 0;
+                            const rawCarb = food.features?.carbs_g || 0;
+                            const rawFat = food.features?.fat_g || 0;
+
+                            const recCals = Math.round(rawCals);
+                            const recProt = Math.round(rawProt);
+                            const recCarb = Math.round(rawCarb);
+                            const recFat = Math.round(rawFat);
+                            
+                            // Calculate differences (1 decimal place for macros, whole number for calories)
+                            const diffCals = Math.round(rawCals - (Number(form.calories) || 0));
+                            const diffProt = Math.round((rawProt - (Number(form.protein) || 0)) * 10) / 10;
+                            const diffCarb = Math.round((rawCarb - (Number(form.carbs) || 0)) * 10) / 10;
+                            const diffFat = Math.round((rawFat - (Number(form.fat) || 0)) * 10) / 10;
+
+                            return (
+                              <button
+                                key={i}
+                                type="button"
+                                onClick={() => handleQuickAdd(food)}
+                                className="w-full text-left relative overflow-hidden rounded-xl border border-[var(--cx-border)] bg-[var(--cx-surface-elevated)]/40 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary-500/10 hover:border-primary-500/50 hover:bg-[var(--cx-surface-elevated)] group cursor-pointer backdrop-blur-sm flex items-start justify-between gap-3"
+                              >
+                                {/* Subtle background gradient on hover */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/0 via-primary-500/0 to-primary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                
+                                <div className="relative z-10 flex-1 min-w-0 flex flex-col justify-center">
+                                  <h5 className="font-semibold text-sm text-[var(--cx-text)] group-hover:text-primary-400 transition-colors truncate">
+                                    {food.food_name}
+                                  </h5>
+                                  
+                                  <div className="flex items-center gap-2 mt-1 text-[11px] sm:text-xs">
+                                    <div className="flex items-center gap-1 shrink-0">
+                                      <span className="font-bold text-[var(--cx-text)]">{recCals}</span>
+                                      <span className="text-[var(--cx-text-muted)]">kcal</span>
+                                    </div>
+                                    <div className="h-3 w-px bg-[var(--cx-border)] shrink-0" />
+                                    <div className="flex items-center gap-2 truncate text-[var(--cx-text-muted)]">
+                                      <span><strong className="font-semibold text-emerald-400">P</strong> {recProt}g</span>
+                                      <span><strong className="font-semibold text-blue-400">C</strong> {recCarb}g</span>
+                                      <span><strong className="font-semibold text-amber-400">F</strong> {recFat}g</span>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
+                                    {Math.abs(diffCals) >= 1 && (
+                                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center ${diffCals > 0 ? "bg-red-500/15 text-red-400" : "bg-emerald-500/15 text-emerald-400"}`}>
+                                        {diffCals > 0 ? "+" : ""}{diffCals} kcal
+                                      </span>
+                                    )}
+                                    {Math.abs(diffProt) >= 0.1 && (
+                                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center ${diffProt > 0 ? "bg-emerald-500/15 text-emerald-400" : "bg-orange-500/15 text-orange-400"}`}>
+                                        {diffProt > 0 ? "+" : ""}{diffProt} g Protein
+                                      </span>
+                                    )}
+                                    {Math.abs(diffCarb) >= 0.1 && (
+                                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center ${diffCarb > 0 ? "bg-orange-500/15 text-orange-400" : "bg-emerald-500/15 text-emerald-400"}`}>
+                                        {diffCarb > 0 ? "+" : ""}{diffCarb} g Carbs
+                                      </span>
+                                    )}
+                                    {Math.abs(diffFat) >= 0.1 && (
+                                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center ${diffFat > 0 ? "bg-red-500/15 text-red-400" : "bg-emerald-500/15 text-emerald-400"}`}>
+                                        {diffFat > 0 ? "+" : ""}{diffFat} g Fat
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                
                                 {food.category && (
-                                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${categoryColors[food.category] || "bg-gray-500/15 text-gray-400"}`}>
+                                  <span className={`relative z-10 shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md mt-0.5 ${categoryColors[food.category] || "bg-gray-500/15 text-gray-400"}`}>
                                     {food.category}
                                   </span>
                                 )}
-                              </div>
-                              <div className="flex gap-3 mt-1 text-xs text-[var(--cx-text-muted)]">
-                                <span>{Math.round(food.features?.calories || 0)} kcal</span>
-                                <span>P: {Math.round(food.features?.protein_g || 0)}g</span>
-                                <span>C: {Math.round(food.features?.carbs_g || 0)}g</span>
-                                <span>F: {Math.round(food.features?.fat_g || 0)}g</span>
-                              </div>
-                            </button>
-                          ))}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
