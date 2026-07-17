@@ -506,9 +506,12 @@ export default function MealTracker() {
                   {/* ── Similar Foods Recommendations ────────────────────── */}
                   {(similarFoods.length > 0 || similarLoading || hasFetchedSimilar) && (
                     <div className="mt-8">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Sparkles className="h-5 w-5 text-primary-400" />
-                        <h4 className="font-bold text-base tracking-tight text-primary-50">AI Recommendations</h4>
+                      <div className="flex flex-col mb-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl leading-none"></span>
+                          <h4 className="font-bold text-base tracking-tight text-primary-50">AI Recommendations</h4>
+                        </div>
+                        <p className="text-xs text-[var(--cx-text-muted)] mt-1 ml-7">Based on food name, category, and nutritional similarity.</p>
                       </div>
 
                       {similarLoading ? (
@@ -523,7 +526,6 @@ export default function MealTracker() {
                         </div>
                       ) : (
                         <div className="grid gap-3 sm:grid-cols-1">
-                          <p className="text-xs font-medium text-[var(--cx-text-muted)] mb-1">Click a card to replace your current selection:</p>
                           {similarFoods.map((food, i) => {
                             // Keep raw values for calculating accurate differences
                             const rawCals = food.features?.calories || 0;
@@ -547,57 +549,96 @@ export default function MealTracker() {
                                 key={i}
                                 type="button"
                                 onClick={() => handleQuickAdd(food)}
-                                className="w-full text-left relative overflow-hidden rounded-xl border border-[var(--cx-border)] bg-[var(--cx-surface-elevated)]/40 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary-500/10 hover:border-primary-500/50 hover:bg-[var(--cx-surface-elevated)] group cursor-pointer backdrop-blur-sm flex items-start justify-between gap-3"
+                                className="w-full text-left relative overflow-hidden rounded-xl border border-[var(--cx-border)] bg-[var(--cx-surface-elevated)]/40 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-500/10 hover:border-primary-500/50 hover:bg-[var(--cx-surface-elevated)] group cursor-pointer backdrop-blur-sm flex flex-col gap-3"
                               >
                                 {/* Subtle background gradient on hover */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/0 via-primary-500/0 to-primary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 via-primary-500/0 to-primary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 
-                                <div className="relative z-10 flex-1 min-w-0 flex flex-col justify-center">
-                                  <h5 className="font-semibold text-sm text-[var(--cx-text)] group-hover:text-primary-400 transition-colors truncate">
+                                {/* Header */}
+                                <div className="relative z-10 flex items-start justify-between gap-3 w-full">
+                                  <h5 className="font-semibold text-sm text-[var(--cx-text)] group-hover:text-primary-400 transition-colors leading-tight pr-2">
                                     {food.food_name}
                                   </h5>
-                                  
-                                  <div className="flex items-center gap-2 mt-1 text-[11px] sm:text-xs">
-                                    <div className="flex items-center gap-1 shrink-0">
-                                      <span className="font-bold text-[var(--cx-text)]">{recCals}</span>
-                                      <span className="text-[var(--cx-text-muted)]">kcal</span>
-                                    </div>
-                                    <div className="h-3 w-px bg-[var(--cx-border)] shrink-0" />
-                                    <div className="flex items-center gap-2 truncate text-[var(--cx-text-muted)]">
-                                      <span><strong className="font-semibold text-emerald-400">P</strong> {recProt}g</span>
-                                      <span><strong className="font-semibold text-blue-400">C</strong> {recCarb}g</span>
-                                      <span><strong className="font-semibold text-amber-400">F</strong> {recFat}g</span>
-                                    </div>
-                                  </div>
+                                  {food.category && (
+                                    <span className={`shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${categoryColors[food.category] || "bg-gray-500/15 text-gray-400"}`}>
+                                      {food.category}
+                                    </span>
+                                  )}
+                                </div>
 
-                                  <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
-                                    {Math.abs(diffCals) >= 1 && (
-                                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center ${diffCals > 0 ? "bg-red-500/15 text-red-400" : "bg-emerald-500/15 text-emerald-400"}`}>
-                                        {diffCals > 0 ? "+" : ""}{diffCals} kcal
-                                      </span>
+                                {/* Nutrition Row */}
+                                <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 text-[11px] sm:text-xs bg-[var(--cx-surface)]/50 rounded-lg p-2.5 border border-[var(--cx-border)]/50">
+                                  <div className="flex items-center gap-1.5 font-semibold text-[var(--cx-text)]">
+                                    <span className="text-sm">🔥</span> {recCals} <span className="text-[var(--cx-text-muted)] font-normal">kcal</span>
+                                  </div>
+                                  <div className="w-px h-3 bg-[var(--cx-border)]"></div>
+                                  <div className="flex items-center gap-1.5 font-semibold text-[var(--cx-text)]">
+                                    <span className="text-sm">💪</span> {recProt}g <span className="text-[var(--cx-text-muted)] font-normal hidden sm:inline">Protein</span>
+                                  </div>
+                                  <div className="w-px h-3 bg-[var(--cx-border)]"></div>
+                                  <div className="flex items-center gap-1.5 font-semibold text-[var(--cx-text)]">
+                                    <span className="text-sm">🍞</span> {recCarb}g <span className="text-[var(--cx-text-muted)] font-normal hidden sm:inline">Carbs</span>
+                                  </div>
+                                  <div className="w-px h-3 bg-[var(--cx-border)]"></div>
+                                  <div className="flex items-center gap-1.5 font-semibold text-[var(--cx-text)]">
+                                    <span className="text-sm">🥑</span> {recFat}g <span className="text-[var(--cx-text-muted)] font-normal hidden sm:inline">Fat</span>
+                                  </div>
+                                </div>
+
+                                {/* Why this recommendation? */}
+                                <div className="relative z-10 mt-1">
+                                  <p className="text-[10px] font-bold text-[var(--cx-text-muted)] uppercase tracking-wider mb-2">Why this recommendation?</p>
+                                  <div className="flex flex-col gap-1.5 text-[11px] text-[var(--cx-text)]/90">
+                                    <span className="flex items-center gap-2"><span className="text-primary-400 text-sm">✓</span> Similar nutrition profile</span>
+                                    {form.category && food.category === form.category && (
+                                      <span className="flex items-center gap-2"><span className="text-primary-400 text-sm">✓</span> Same category</span>
                                     )}
-                                    {Math.abs(diffProt) >= 0.1 && (
-                                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center ${diffProt > 0 ? "bg-emerald-500/15 text-emerald-400" : "bg-orange-500/15 text-orange-400"}`}>
-                                        {diffProt > 0 ? "+" : ""}{diffProt} g Protein
-                                      </span>
+                                    {diffCals < 0 && Math.abs(diffCals) >= 10 && (
+                                      <span className="flex items-center gap-2"><span className="text-emerald-400 text-sm">✓</span> Lower calories</span>
                                     )}
-                                    {Math.abs(diffCarb) >= 0.1 && (
-                                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center ${diffCarb > 0 ? "bg-orange-500/15 text-orange-400" : "bg-emerald-500/15 text-emerald-400"}`}>
-                                        {diffCarb > 0 ? "+" : ""}{diffCarb} g Carbs
-                                      </span>
+                                    {diffProt > 0 && Math.abs(diffProt) >= 2 && (
+                                      <span className="flex items-center gap-2"><span className="text-emerald-400 text-sm">✓</span> Higher protein</span>
                                     )}
-                                    {Math.abs(diffFat) >= 0.1 && (
-                                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center ${diffFat > 0 ? "bg-red-500/15 text-red-400" : "bg-emerald-500/15 text-emerald-400"}`}>
-                                        {diffFat > 0 ? "+" : ""}{diffFat} g Fat
-                                      </span>
+                                    {diffFat < 0 && Math.abs(diffFat) >= 2 && (
+                                      <span className="flex items-center gap-2"><span className="text-emerald-400 text-sm">✓</span> Lower fat</span>
                                     )}
                                   </div>
                                 </div>
-                                
-                                {food.category && (
-                                  <span className={`relative z-10 shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md mt-0.5 ${categoryColors[food.category] || "bg-gray-500/15 text-gray-400"}`}>
-                                    {food.category}
-                                  </span>
+
+                                {/* Nutrition Changes & Action */}
+                                {(Math.abs(diffCals) >= 1 || Math.abs(diffProt) >= 0.1 || Math.abs(diffCarb) >= 0.1 || Math.abs(diffFat) >= 0.1) && (
+                                  <div className="relative z-10 pt-3 border-t border-[var(--cx-border)]/50 mt-1 flex items-end justify-between">
+                                    <div>
+                                      <p className="text-[10px] font-bold text-[var(--cx-text-muted)] uppercase tracking-wider mb-2">Nutrition Changes</p>
+                                      <div className="flex items-center gap-1.5 flex-wrap">
+                                        {Math.abs(diffCals) >= 1 && (
+                                          <span className={`text-[10px] font-semibold px-2 py-1 rounded flex items-center gap-1 shadow-sm ${diffCals > 0 ? "bg-orange-500/10 text-orange-400 border border-orange-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"}`}>
+                                            {diffCals > 0 ? "↑" : "↓"} {Math.abs(diffCals)} kcal
+                                          </span>
+                                        )}
+                                        {Math.abs(diffProt) >= 0.1 && (
+                                          <span className={`text-[10px] font-semibold px-2 py-1 rounded flex items-center gap-1 shadow-sm ${diffProt > 0 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-orange-500/10 text-orange-400 border border-orange-500/20"}`}>
+                                            {diffProt > 0 ? "↑" : "↓"} {Math.abs(diffProt)} g Protein
+                                          </span>
+                                        )}
+                                        {Math.abs(diffCarb) >= 0.1 && (
+                                          <span className={`text-[10px] font-semibold px-2 py-1 rounded flex items-center gap-1 shadow-sm ${diffCarb > 0 ? "bg-[var(--cx-surface-elevated)] text-[var(--cx-text)] border border-[var(--cx-border)]" : "bg-[var(--cx-surface-elevated)] text-[var(--cx-text)] border border-[var(--cx-border)]"}`}>
+                                            {diffCarb > 0 ? "↑" : "↓"} {Math.abs(diffCarb)} g Carbs
+                                          </span>
+                                        )}
+                                        {Math.abs(diffFat) >= 0.1 && (
+                                          <span className={`text-[10px] font-semibold px-2 py-1 rounded flex items-center gap-1 shadow-sm ${diffFat > 0 ? "bg-orange-500/10 text-orange-400 border border-orange-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"}`}>
+                                            {diffFat > 0 ? "↑" : "↓"} {Math.abs(diffFat)} g Fat
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="shrink-0">
+                                      <span className="text-xs font-bold text-primary-400 bg-primary-500/10 border border-primary-500/20 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                        Replace Food
+                                      </span>
+                                    </div>
+                                  </div>
                                 )}
                               </button>
                             );
