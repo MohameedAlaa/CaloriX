@@ -168,7 +168,14 @@ class MLService:
 
         try:
             text_vector = self.recommender["tfidf"].transform([text_value]).toarray()
-            query_vector = np.hstack([numeric_values, text_vector])
+            
+            # The loaded NearestNeighbors model may have been trained only on text features
+            # or on a combination of numeric and text features. We check n_features_in_ to be sure.
+            if getattr(self.recommender["nn_model"], "n_features_in_", None) == text_vector.shape[1]:
+                query_vector = text_vector
+            else:
+                query_vector = np.hstack([numeric_values, text_vector])
+                
             n_neighbors = min(top_k + 1, len(self.recommender["food_frame"]))
             distances, indices = self.recommender["nn_model"].kneighbors(query_vector, n_neighbors=n_neighbors)
         except Exception as e:
